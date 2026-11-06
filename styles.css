@@ -317,6 +317,43 @@ button {
   gap: 16px;
 }
 
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--text);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-border);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.theme-toggle:active {
+  transform: scale(0.96);
+}
+
+.theme-icon-sun {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-icon-moon {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-icon-sun {
+  display: block;
+}
+
 .header-cta {
   border-radius: var(--radius-pill);
 }
@@ -737,7 +774,7 @@ button {
 .work-mockup {
   width: 100%;
   max-width: 380px;
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
@@ -1283,7 +1320,7 @@ a.detail-value:hover {
 .chat-panel-body {
   position: relative;
   flex: 1;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -1298,25 +1335,37 @@ a.detail-value:hover {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 
-  /* Official n8n Chat Widget CSS Variable Overrides (AMADEUS crimson theme) */
+  /* Official n8n Chat Widget CSS Variable Overrides (AMADEUS theme) */
   --chat--color-primary: var(--accent);
   --chat--color-primary-shade-50: var(--accent-hover);
   --chat--color-primary-tint-50: #a33345;
   --chat--color-primary-text: #ffffff;
   --chat--color-white: #ffffff;
-  --chat--color-light: #fbf9f5;
-  --chat--color-light-shade-50: #f2eee5;
-  --chat--color-light-tint-50: #ffffff;
-  --chat--color-dark: #181715;
-  --chat--color-muted: #6c6860;
-  --chat--color-disabled: #98938a;
+  --chat--color-light: var(--bg-card);
+  --chat--color-light-shade-50: var(--bg-alt);
+  --chat--color-light-tint-50: var(--bg);
+  --chat--color-dark: var(--text);
+  --chat--color-muted: var(--text-muted);
+  --chat--color-disabled: var(--text-light);
   --chat--color-typing: var(--accent);
   --chat--font-family: var(--font-sans);
   --chat--border-radius: 8px;
-  --chat--header--background: #f8f6f0;
-  --chat--header--color: #181715;
+  --chat--header--background: var(--bg);
+  --chat--header--color: var(--text);
+
+  /* Current @n8n/chat message tokens (v1.x) */
+  --chat--message--bot--background: #f5e7e9;
+  --chat--message--bot--color: #302326;
+  --chat--message--bot--border: 1px solid #e7c8ce;
+  --chat--message--user--background: var(--accent);
+  --chat--message--user--color: #ffffff;
+  --chat--message--user--border: 1px solid var(--accent);
+  --chat--message--padding: 0.72rem 0.9rem;
+  --chat--message--border-radius: 12px;
+  --chat--message--margin-bottom: 0.65rem;
+  --chat--messages-list--padding: 1rem;
 }
 
 /* Ensure mounted widget fills entire panel height */
@@ -1353,25 +1402,70 @@ a.detail-value:hover {
   overflow-y: auto !important;
 }
 
+#n8nChatContainer .chat-body {
+  background-color: var(--bg-card) !important;
+}
+
 #n8nChatContainer .chat-messages-list {
-  background-color: #ffffff !important;
+  background-color: var(--bg-card) !important;
   padding: 16px !important;
+  gap: 14px !important;
 }
 
-/* Message Bubbles */
-#n8nChatContainer .chat-message--user .chat-message-bubble {
-  background-color: var(--accent) !important;
+/* Message Bubbles — target the actual .chat-message nodes emitted by @n8n/chat. */
+#n8nChatContainer .chat-message.chat-message-from-user,
+#n8nChatContainer .chat-message.chat-message-from-bot {
+  /* Content-sized bubbles: short replies stay compact; long replies wrap neatly. */
+  display: block !important;
+  width: fit-content !important;
+  max-width: 88% !important;
+  min-width: 0 !important;
+  padding: 0.72rem 0.9rem !important;
+  margin-bottom: 0.65rem !important;
+  border-radius: 12px !important;
+  font-family: var(--font-sans) !important;
+  line-height: 1.5 !important;
+  box-sizing: border-box !important;
+}
+
+#n8nChatContainer .chat-message.chat-message-from-user {
+  align-self: flex-end !important;
+  margin-left: auto !important;
+  background: var(--accent) !important;
   color: #ffffff !important;
-  border-radius: 14px 14px 2px 14px !important;
+  border: 1px solid var(--accent) !important;
+  border-radius: 12px 12px 3px 12px !important;
+}
+
+#n8nChatContainer .chat-message.chat-message-from-bot {
+  align-self: flex-start !important;
+  margin-right: auto !important;
+  background: #f5e7e9 !important;
+  color: #302326 !important;
+  border: 1px solid #e7c8ce !important;
+  border-radius: 12px 12px 12px 3px !important;
+  box-shadow: 0 2px 7px rgba(65, 25, 33, 0.055) !important;
+}
+
+#n8nChatContainer .chat-message-from-bot .n8n-markdown,
+#n8nChatContainer .chat-message-from-bot .n8n-markdown p,
+#n8nChatContainer .chat-message-from-bot .n8n-markdown li {
+  color: inherit !important;
+}
+
+#n8nChatContainer .chat-inputs,
+#n8nChatContainer .chat-inputs textarea,
+#n8nChatContainer .chat-inputs input,
+#n8nChatContainer .chat-input {
+  color: var(--text) !important;
+  background-color: var(--bg-card) !important;
+  border-color: var(--border) !important;
   font-family: var(--font-sans) !important;
 }
 
-#n8nChatContainer .chat-message--bot .chat-message-bubble {
-  background-color: #f5f2ea !important;
-  color: var(--text) !important;
-  border: 1px solid var(--border-subtle) !important;
-  border-radius: 14px 14px 14px 2px !important;
-  font-family: var(--font-sans) !important;
+#n8nChatContainer .chat-inputs textarea::placeholder,
+#n8nChatContainer .chat-inputs input::placeholder {
+  color: var(--text-light) !important;
 }
 
 /* Deep maroon Send Button & Input */
@@ -1400,7 +1494,7 @@ a.detail-value:hover {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   z-index: 2;
   transition: opacity 0.3s ease;
 }
@@ -1716,5 +1810,158 @@ a.detail-value:hover {
   .reveal-on-scroll {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   16. Dark Mode — editorial charcoal with the existing AMADEUS crimson accent
+   ----------------------------------------------------------------------------- */
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #171719;
+  --bg-alt: #1e1f22;
+  --bg-card: #25262a;
+  --bg-hover: #33343a;
+
+  --text: #f1eee9;
+  --text-muted: #b9b3aa;
+  --text-light: #918b83;
+
+  --border: #3d3e44;
+  --border-subtle: #323338;
+  --border-dark: #c9c3ba;
+
+  --accent: #8b2635;
+  --accent-hover: #a13d4e;
+  --accent-soft: rgba(139, 38, 53, 0.20);
+  --accent-border: rgba(139, 38, 53, 0.48);
+  --accent-glow: rgba(139, 38, 53, 0.28);
+
+  --status-online: #4da879;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.18);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.24);
+  --shadow-lg: 0 16px 44px rgba(0, 0, 0, 0.32);
+  --shadow-chat: 0 18px 48px rgba(0, 0, 0, 0.48), 0 4px 14px rgba(0, 0, 0, 0.24);
+  --chat-bot-bubble: #303136;
+}
+
+html[data-theme="dark"] body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+html[data-theme="dark"] .site-header {
+  background-color: rgba(23, 23, 25, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .hero-ambient-glow {
+  background: radial-gradient(circle, rgba(139, 38, 53, 0.12) 0%, rgba(23, 23, 25, 0) 70%);
+}
+
+html[data-theme="dark"] .service-row:hover {
+  background-color: rgba(255, 255, 255, 0.035);
+}
+
+html[data-theme="dark"] .service-tag {
+  background-color: rgba(255, 255, 255, 0.065);
+}
+
+html[data-theme="dark"] .work-card-media {
+  background-color: #1b1c1f;
+}
+
+html[data-theme="dark"] .work-mockup {
+  background: #25262a;
+  border-color: var(--border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .mockup-header {
+  border-bottom-color: var(--border-subtle);
+}
+
+html[data-theme="dark"] .mockup-dot {
+  background: #55565d;
+}
+
+html[data-theme="dark"] .bar,
+html[data-theme="dark"] .grid-box,
+html[data-theme="dark"] .node {
+  background: #3a3b41;
+}
+
+html[data-theme="dark"] .chat-panel-body,
+html[data-theme="dark"] #n8nChatContainer,
+html[data-theme="dark"] #n8nChatContainer .chat-messages-list {
+  background-color: var(--bg-card) !important;
+}
+
+html[data-theme="dark"] #n8nChatContainer {
+  --chat--color-light: var(--bg-card);
+  --chat--color-light-shade-50: var(--bg-alt);
+  --chat--color-light-tint-50: #303136;
+  --chat--color-dark: var(--text);
+  --chat--color-muted: var(--text-muted);
+  --chat--color-disabled: var(--text-light);
+  --chat--header--background: var(--bg);
+  --chat--header--color: var(--text);
+
+  /* Current @n8n/chat message tokens — dark theme */
+  --chat--message--bot--background: #303136;
+  --chat--message--bot--color: #f1eee9;
+  --chat--message--bot--border: 1px solid #45464d;
+  --chat--message--user--background: var(--accent);
+  --chat--message--user--color: #ffffff;
+  --chat--message--user--border: 1px solid var(--accent);
+  --chat--message--padding: 0.72rem 0.9rem;
+  --chat--message--border-radius: 12px;
+  --chat--message--margin-bottom: 0.65rem;
+  --chat--messages-list--padding: 1rem;
+}
+
+html[data-theme="dark"] #n8nChatContainer .chat-message.chat-message-from-bot {
+  align-self: flex-start !important;
+  margin-right: auto !important;
+  background: #303136 !important;
+  color: #f1eee9 !important;
+  border: 1px solid #45464d !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14) !important;
+}
+
+html[data-theme="dark"] #n8nChatContainer .chat-message-from-bot .n8n-markdown,
+html[data-theme="dark"] #n8nChatContainer .chat-message-from-bot .n8n-markdown p,
+html[data-theme="dark"] #n8nChatContainer .chat-message-from-bot .n8n-markdown li {
+  color: inherit !important;
+}
+
+html[data-theme="dark"] #n8nChatContainer .chat-inputs,
+html[data-theme="dark"] #n8nChatContainer .chat-inputs textarea,
+html[data-theme="dark"] #n8nChatContainer .chat-inputs input,
+html[data-theme="dark"] #n8nChatContainer .chat-input {
+  background-color: var(--bg-card) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+html[data-theme="dark"] .chat-loading-state,
+html[data-theme="dark"] .chat-config-notice,
+html[data-theme="dark"] .config-notice-card,
+html[data-theme="dark"] .notice-instructions {
+  background-color: var(--bg-card);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body,
+  .site-header,
+  .values-list,
+  .work-card,
+  .contact-card,
+  .chat-panel-container,
+  .chat-panel-header,
+  .chat-panel-body {
+    transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease;
   }
 }

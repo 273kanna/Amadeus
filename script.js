@@ -22,6 +22,49 @@
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const mobileNav = document.getElementById('mobileNav');
   const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+  /* ---------------------------------------------------------------------------
+   * Light / Dark Theme
+   * Saves the visitor's choice locally and keeps the toggle accessible.
+   * --------------------------------------------------------------------------- */
+  const themeStorageKey = 'amadeus-theme';
+
+  function applyTheme(theme, persist = false) {
+    const activeTheme = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', activeTheme);
+
+    if (themeToggleBtn) {
+      const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
+      const label = `Switch to ${nextTheme} mode`;
+      themeToggleBtn.setAttribute('aria-label', label);
+      themeToggleBtn.setAttribute('title', label);
+      themeToggleBtn.setAttribute('aria-pressed', String(activeTheme === 'dark'));
+    }
+
+    if (persist) {
+      try {
+        window.localStorage.setItem(themeStorageKey, activeTheme);
+      } catch (error) {
+        console.warn('[AMADEUS Theme] Could not save theme preference:', error);
+      }
+    }
+  }
+
+  let savedTheme = 'light';
+  try {
+    savedTheme = window.localStorage.getItem(themeStorageKey) === 'dark' ? 'dark' : 'light';
+  } catch (error) {
+    // Continue with the light theme if browser storage is unavailable.
+  }
+  applyTheme(savedTheme);
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', function () {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      applyTheme(currentTheme === 'dark' ? 'light' : 'dark', true);
+    });
+  }
 
   let isChatInitialized = false;
   let lastActiveElement = null;
