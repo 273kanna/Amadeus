@@ -125,7 +125,7 @@
         target: '#n8nChatContainer',
         mode: 'fullscreen',
         showWelcomeScreen: false,
-        loadPreviousSession: true,
+        loadPreviousSession: false,
         allowFileUploads: false,
         i18n: {
           en: {
@@ -269,8 +269,8 @@
   window.toggleMobileMenu = function (forcedState) {
     if (!mobileNav || !mobileMenuBtn) return;
 
-    const isOpen = typeof forcedState === 'boolean' 
-      ? forcedState 
+    const isOpen = typeof forcedState === 'boolean'
+      ? forcedState
       : !mobileNav.classList.contains('is-open');
 
     if (isOpen) {
