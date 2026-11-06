@@ -1,0 +1,16 @@
+# Internal project plan
+PLAN.md
+
+# Secrets and environment variables
+.env
+.env.*
+!.env.example
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Dependencies (if any are added later)
+node_modules/
